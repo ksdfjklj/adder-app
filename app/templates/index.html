@@ -4,20 +4,35 @@
     <meta charset="UTF-8" />
     <title>Adder App</title>
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Add Two Numbers</h1>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-sm">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6">Add Two Numbers</h1>
 
-    <form hx-post="/add-form" hx-target="#result" hx-swap="innerHTML">
-        <label for="a">First number</label>
-        <input type="number" step="any" name="a" id="a" required />
+        <form hx-post="/add-form" hx-target="#result" hx-swap="innerHTML" class="space-y-4">
+            <div>
+                <label for="a" class="block text-sm font-medium text-gray-700">First number</label>
+                <input type="number" step="any" name="a" id="a" required
+                       class="mt-1 w-full rounded-md border-gray-300 border px-3 py-2
+                              focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
 
-        <label for="b">Second number</label>
-        <input type="number" step="any" name="b" id="b" required />
+            <div>
+                <label for="b" class="block text-sm font-medium text-gray-700">Second number</label>
+                <input type="number" step="any" name="b" id="b" required
+                       class="mt-1 w-full rounded-md border-gray-300 border px-3 py-2
+                              focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
 
-        <button type="submit">Add</button>
-    </form>
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white font-medium py-2 rounded-md
+                           hover:bg-blue-700 transition">
+                Add
+            </button>
+        </form>
 
-    <div id="result"></div>
+        <div id="result" class="mt-4 text-lg text-gray-800"></div>
+    </div>
 </body>
 </html>
