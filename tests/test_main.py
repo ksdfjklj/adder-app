@@ -26,3 +26,14 @@ def test_health_check() -> None:
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+def test_index_page_renders() -> None:
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "Add Two Numbers" in response.text
+
+def test_add_form_returns_result_fragment() -> None:
+    response = client.post("/add-form", data={"a": "3", "b": "5"})
+    assert response.status_code == 200
+    assert "Result:" in response.text
+    assert "8.0" in response.text
