@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 
 from app.core import add
+from app.schemas import AddRequest, AddResponse
 
 app = FastAPI()
 
-@app.post("/add")
-def read_root(a: float, b: float) -> dict[str, float]:
-    return {"result": add(a, b)}
+@app.post("/add", response_model=AddResponse)
+def read_root(request: AddRequest) -> AddResponse:
+    return AddResponse(result=add(request.a, request.b))
