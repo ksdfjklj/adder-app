@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Form, Request
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse
 
@@ -19,3 +20,10 @@ def health_check() -> dict[str, str]:
 @app.get("/")
 def read_index(request: Request) -> _TemplateResponse:
     return templates.TemplateResponse(request=request, name="index.html", context={})
+
+@app.post("/add-form", response_class=HTMLResponse)
+def add_form(request: Request, a: float = Form(...), b: float = Form(...)) -> HTMLResponse:
+    result = add(a, b)
+    return templates.TemplateResponse(
+        request=request, name="result.html", context={"result": result}
+        )
