@@ -8,3 +8,7 @@ app = FastAPI()
 @app.post("/add", response_model=AddResponse)
 def read_root(request: AddRequest) -> AddResponse:
     return AddResponse(result=add(request.a, request.b))
+
+@app.get("/health")
+def health_check() -> dict[str, str]:
+    return {"status": "ok"}
