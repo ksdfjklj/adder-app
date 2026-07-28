@@ -70,9 +70,10 @@ jobs:
     if: github.event_name == 'push'
 
     steps:
+      - name: Install Railway CLI
+        run: curl -fsSL https://railway.app/install.sh | sh
+
       - name: Deploy to Railway
-        uses: bervProject/railway-deploy@main
+        run: railway redeploy --yes --service adder-app
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        with:
-          service: adder-app
