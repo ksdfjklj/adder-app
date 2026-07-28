@@ -76,6 +76,27 @@ docker compose down
 The container exposes a `/health` endpoint used by Docker's built-in healthcheck
 to confirm the service is responsive.
 
+## Deployment
+
+This project deploys automatically via CI/CD:
+
+1. On every push to `master`, GitHub Actions runs linting, type-checking, and tests
+2. If those pass, a Docker image is built and pushed to GitHub Container Registry
+   (`ghcr.io/ksdfjklj/adder-app`), tagged with both the commit SHA and `latest`
+3. GitHub Actions then triggers a redeploy on Railway, which pulls the freshly
+   pushed image and runs it
+
+No manual deployment steps are required — pushing to `master` is the only
+trigger needed, provided all checks pass.
+
+**Live URL**: https://adder-app-production.up.railway.app/
+
+### Infrastructure
+
+- **Registry**: GitHub Container Registry (GHCR)
+- **Hosting**: [Railway](https://railway.com)
+- **Trigger**: GitHub Actions workflow (`.github/workflows/ci.yml`)
+
 ## API Reference
 
 ### `GET /health`
