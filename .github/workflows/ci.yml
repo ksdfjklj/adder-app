@@ -71,7 +71,7 @@ jobs:
 
     steps:
       - name: Install Railway CLI
-        run: curl -fsSL https://railway.app/install.sh | sh
+        run: curl -fsSL https://railway.app/install.sh | bash
 
       - name: Deploy to Railway
         run: railway redeploy --yes --service adder-app
