@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.main import app, limiter
 
 client = TestClient(app)
 
@@ -37,3 +37,16 @@ def test_add_form_returns_result_fragment() -> None:
     assert response.status_code == 200
     assert "Result:" in response.text
     assert "8.0" in response.text
+
+
+def test_add_rate_limit_exceeded() -> None:
+    limiter._storage.reset()  # Reset the rate limit storage before the test
+    
+    for _ in range(10):
+        response = client.post("/add", json={"a": 1, "b": 1})
+        assert response.status_code == 200
+
+    # The 11th request should exceed the rate limit
+    response = client.post("/add", json={"a": 1, "b": 1})
+    assert response.status_code == 429
+    assert "Rate limit exceeded" in response.text
