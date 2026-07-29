@@ -38,6 +38,36 @@ def test_add_form_returns_result_fragment() -> None:
     assert "Result:" in response.text
     assert "8.0" in response.text
 
+def test_add_large_numbers() -> None:
+    response = client.post("/add", json={"a": 1e308, "b": 1e308})
+    assert response.status_code == 200
+    assert response.json()["result"] is None # Standard JSON has no representation for infinity.
+
+def test_add_malformed_json() -> None:
+    response = client.post(
+        "/add",
+        content="{not valid json",
+        headers={"Content-Type": "application/json"},
+    )
+    assert response.status_code == 422
+
+
+def test_add_empty_body() -> None:
+    response = client.post("/add", json={})
+    assert response.status_code == 422
+
+
+def test_add_extra_fields_ignored() -> None:
+    response = client.post("/add", json={"a": 2, "b": 3, "c": 999})
+    assert response.status_code == 200
+    assert response.json() == {"result": 5.0}
+
+
+def test_add_negative_zero() -> None:
+    response = client.post("/add", json={"a": 0, "b": -0.0})
+    assert response.status_code == 200
+    assert response.json() == {"result": 0.0}
+
 
 def test_add_rate_limit_exceeded() -> None:
     limiter._storage.reset()  # Reset the rate limit storage before the test
