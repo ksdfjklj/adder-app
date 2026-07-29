@@ -3,6 +3,34 @@
 A minimal FastAPI service that adds two numbers — built as a full, industry-standard
 software engineering exercise: design, testing, containerization, CI/CD, and deployment.
 
+## Architecture
+
+```
+Browser (htmx form) ──┐
+├──▶ FastAPI ──▶ core.add()
+JSON API clients ──────┘ │
+├──▶ structlog (JSON logs)
+├──▶ slowapi (rate limiting)
+└──▶ CORS middleware
+
+FastAPI ──▶ Docker image ──▶ GHCR ──▶ Railway (auto-redeploy on new :latest)
+```
+
+- **`app/core.py`** — pure business logic, framework-agnostic
+- **`app/schemas.py`** — Pydantic request/response contracts
+- **`app/config.py`** — environment-driven settings (pydantic-settings)
+- **`app/logging_config.py`** — structured JSON logging setup
+- **`app/main.py`** — FastAPI routes, middleware, wiring
+- **`app/templates/`** — Jinja2 + htmx frontend
+
+## Known Limitations
+
+- Rate limiting uses in-memory storage — resets on restart, and won't work
+  correctly across multiple replicas (would need Redis-backed storage for that)
+- Values that overflow float precision (e.g. very large number additions)
+  serialize to `null` in the JSON response rather than an explicit error
+- No authentication — this is intentionally a public, stateless calculator API
+
 ## Tech Stack
 
 - **Backend**: Python 3.12, FastAPI, Pydantic
@@ -11,6 +39,9 @@ software engineering exercise: design, testing, containerization, CI/CD, and dep
 - **Testing**: pytest
 - **Linting/type-checking**: ruff, mypy
 - **Containerization**: Docker, Docker Compose
+- **Observability**: structlog (structured JSON logging)
+- **Resilience**: slowapi (rate limiting), CORS middleware
+- **CI/CD**: GitHub Actions → GHCR → Railway
 
 ## Getting Started
 
