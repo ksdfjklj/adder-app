@@ -6,5 +6,6 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_json: bool = True
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    cors_origins: list[str] = ["http://localhost:8000"]
 
 settings = Settings()
